@@ -17,7 +17,10 @@ const insert_product = async (req, res) => {
      const product = new Product({
           p_id: req.body.p_id,
           p_name: req.body.p_name,
-          p_cost: req.body.p_cost
+          p_cost: req.body.p_cost,
+          p_cat: req.body.p_cat,
+          p_desc: req.body.p_desc,
+          p_img: req.body.p_img
      })
      try {
           const savedProduct = await product.save()
@@ -33,7 +36,10 @@ const update_product = async (req, res) => {
      let p_id = req.body.p_id
      const product = {
           p_name: req.body.p_name,
-          p_cost: req.body.p_cost
+          p_cost: req.body.p_cost,
+          p_cat: req.body.p_cat,
+          p_desc: req.body.p_desc,
+          p_img: req.body.p_img
      }
      try {
           const updateProduct = await Product.updateOne(
