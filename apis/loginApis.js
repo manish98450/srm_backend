@@ -7,7 +7,7 @@ const userfind = async(req,res)=>{
         .then(array => {
             if (array.length > 0) {
                 console.log('Auth Success');
-               // let myToken = token(obj, new Date().toString());
+                let myToken = token(obj, new Date().toString());
                 res.json({ 'auth': 'success', token: myToken });
             } else {
                 console.log('Auth Failed');
