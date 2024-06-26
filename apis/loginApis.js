@@ -1,29 +1,35 @@
 const User = require('../model/User')
 let token = require('../token')
-const userfind = async(req,res)=>{
-    try{
-        let obj = req.body
-        const data = await User.find(obj).exec()
-        .then(array => {
-            if (array.length > 0) {
-                console.log('Auth Success');
-                let myToken = token(obj, new Date().toString());
-                res.json({ 'auth': 'success', token: myToken });
-            } else {
-                console.log('Auth Failed');
-                res.json({ 'auth': 'failed' });
-            }
-        })
-        .catch(err => {
-            console.log('Error:', err);
-            res.status(500).json({ 'auth': 'failed', 'error': err.message });
-        });
+
+const userfind = async (req, res) => {
+    console.log("body in userfind ",req.body.params)
+    try {
+        let { u_name, u_pwd } = req.body.params; // Extracting username and password from request body
+        console.log('u_name u_pwd ',u_name,' ',u_pwd)
+        if (!u_name || !u_pwd) {
+            return res.status(400).json({ 'auth': 'failed', 'message': 'Username and password are required' });
         }
-    catch(error){
-        console.log('Fetch error :-',error)
-        res.json({'message':error})
+
+        // Adjust the query to match the database schema
+        const data = await User.findOne({ u_name: u_name, u_pwd: u_pwd }).exec();
+
+        if (data) {
+            console.log('Auth Success');
+            let myToken = token({ u_name }, new Date().toString());
+            res.json({ 'auth': 'success', 'username': u_name, 'token': myToken });
+        } else {
+            console.log('Auth Failed');
+            res.json({ 'auth': 'failed' });
+        }
+    } catch (error) {
+        console.log('Fetch error :-', error);
+        res.status(500).json({ 'auth': 'failed', 'error': error.message });
     }
-}
+};
+
+module.exports = { userfind };
+
+
 const insert_user = async (req, res) => {
     const user = new User({
         u_id: req.body.u_id,

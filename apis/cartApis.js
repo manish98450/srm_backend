@@ -15,10 +15,14 @@ const products_all = async (req, res) => {
 //insert a product
 const insert_product = async (req, res) => {
      const product = new Product({
-          p_id: req.body.p_id,
-          p_img:req.body.p_img,
-          p_cost: req.body.p_cost,
+          
           u_name: req.body.u_name,
+          p_name: req.body.p_name,
+          p_id:req.body.p_id,
+          qty:req.body.qty,
+          p_cost: req.body.p_cost,
+          p_img:req.body.p_img,
+          
      })
      try {
           const savedProduct = await product.save()
@@ -31,29 +35,30 @@ const insert_product = async (req, res) => {
 }
 //update product
 const update_product = async (req, res) => {
-     let p_id = req.body.p_id
+     let p_id = req.body.p_id;
+     let u_name = req.body.u_name;
      const product = {
-          p_img: req.body.p_name,
-          p_cost: req.body.p_cost,
-          u_name: req.body.u_name,
-     }
+         u_name: req.body.u_name,
+         p_id: req.body.p_id,
+         qty: req.body.qty,
+     };
      try {
-          const updateProduct = await Product.updateOne(
-               { p_id }, product
-          )
-          if (updateProduct.modifiedCount != 0) {
-               console.log('Product Updated', updateProduct)
-               res.send({ 'update': 'success' })
-          }
-          else {
-               console.log('Product not updated')
-               res.send({ 'update': 'Record Not Found' })
-          }
+         const updateProduct = await Product.updateOne(
+             { p_id: p_id, u_name: u_name },  // Ensure both p_id and u_name match
+             { $set: product }                // Use $set to update specific fields
+         );
+         if (updateProduct.modifiedCount != 0) {
+             console.log('Product Updated', updateProduct);
+             res.send({ 'update': 'success' });
+         } else {
+             console.log('Product not updated');
+             res.send({ 'update': 'Record Not Found' });
+         }
+     } catch (error) {
+         res.status(400).send(error);
      }
-     catch (error) {
-          res.status(400).send(error)
-     }
-}
+ };
+ 
 
 
 //delete product
